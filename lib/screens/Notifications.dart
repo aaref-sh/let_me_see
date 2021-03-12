@@ -8,9 +8,34 @@ class Notifications extends StatelessWidget {
       children: [
         ListTile(
           leading: Icon(LineIcons.bullhorn),
+          onTap: () => print('go hack yourself'),
           title: Text("إلغاء محاضرة السبت"),
           subtitle: Text('بواسطة: الدكتور عامر'),
-        )
+        ),
+        ListTile(
+          leading: Icon(LineIcons.bullhorn),
+          onTap: () => print('go hack yourself'),
+          title: Text("إلغاء محاضرة السبت"),
+          subtitle: Text('بواسطة: الدكتور عامر'),
+        ),
+        ListTile(
+          leading: Icon(LineIcons.bullhorn),
+          onTap: () => print('go hack yourself'),
+          title: Text("إلغاء محاضرة السبت"),
+          subtitle: Text('بواسطة: الدكتور عامر'),
+        ),
+        ListTile(
+          leading: Icon(LineIcons.bullhorn),
+          onTap: () => print('go hack yourself'),
+          title: Text("إلغاء محاضرة السبت"),
+          subtitle: Text('بواسطة: الدكتور عامر'),
+        ),
+        ListTile(
+          leading: Icon(LineIcons.bullhorn),
+          onTap: () => print('go hack yourself'),
+          title: Text("إلغاء محاضرة السبت"),
+          subtitle: Text('بواسطة: الدكتور عامر'),
+        ),
       ],
     );
   }

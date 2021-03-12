@@ -1,5 +1,6 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:let_me_see/screens/Notifications.dart';
 import 'package:let_me_see/screens/TableScreen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,8 +14,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListView(
       children: [
         SizedBox(
-            height: 250.0,
-            width: 350.0,
+            height: (MediaQuery.of(context).size.width) * 0.57,
+            width: MediaQuery.of(context).size.width,
             child: Carousel(
               images: [
                 NetworkImage(
@@ -29,7 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
               dotBgColor: Colors.purple.withOpacity(0.5),
               borderRadius: true,
             )),
-        Carde(text: 'الجدول', widget: TableScreen())
+        Carde(text: 'الجدول', widget: TableScreen()),
+        Carde(text: 'الاعلانات', widget: Notifications()),
       ],
     );
   }
@@ -45,7 +47,7 @@ class Carde extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 20, left: 10, right: 10),
+      padding: EdgeInsets.only(top: 20, left: 7, right: 7),
       child: Container(
         //height: 600,
         decoration: BoxDecoration(
