@@ -1,62 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:let_me_see/screens/Tabber.dart';
 import 'Home.dart';
+
+List<String> times = ['8:00 ص', '10:00 ص', '12:00 م', '2:00 م', '4:00 م'];
+List<String> ss = [
+  'الوقت',
+  'الأحد',
+  'الاثنين',
+  'الثلاثاء',
+  'الأربعاء',
+  'الخميس'
+];
 
 class TableScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
-      crossAxisCount: 6,
-      children: [
-        Container(
-            color: Colors.grey[700],
-            child: Center(child: Text('الوقت', style: ts))),
-        Container(
-            color: Colors.grey, child: Center(child: Text('الأحد', style: ts))),
-        Container(
-            color: Colors.grey,
-            child: Center(child: Text('الاثنين', style: ts))),
-        Container(
-            color: Colors.grey,
-            child: Center(child: Text('الثلاثاء', style: ts))),
-        Container(
-            color: Colors.grey,
-            child: Center(child: Text('الأربعاء', style: ts))),
-        Container(
-            color: Colors.grey,
-            child: Center(child: Text('الخميس', style: ts))),
-        Container(
-            color: Colors.grey[700],
-            child: Center(child: Text('8:00', style: ts))),
-        Container(color: Colors.grey[300], child: Center(child: Text('مح1'))),
-        Container(color: Colors.grey[300], child: Center(child: Text('مح2'))),
-        Container(color: Colors.grey[300], child: Center(child: Text('مح3'))),
-        Container(color: Colors.grey[300], child: Center(child: Text('non'))),
-        Container(color: Colors.grey[300], child: Center(child: Text('مح5'))),
-        Container(
-            color: Colors.grey[700],
-            child: Center(child: Text('10:00', style: ts))),
-        Center(child: Text('مح1')),
-        Center(child: Text('مح2')),
-        Center(child: Text('non')),
-        Center(child: Text('مح3')),
-        Center(child: Text('مح5')),
-        Container(
-            color: Colors.grey[700],
-            child: Center(child: Text('12:00', style: ts))),
-        Container(color: Colors.grey[300], child: Center(child: Text('مح1'))),
-        Container(color: Colors.grey[300], child: Center(child: Text('مح2'))),
-        Container(color: Colors.grey[300], child: Center(child: Text('non'))),
-        Container(color: Colors.grey[300], child: Center(child: Text('مح3'))),
-        Container(color: Colors.grey[300], child: Center(child: Text('مح5'))),
-        Container(
-            color: Colors.grey[700],
-            child: Center(child: Text('10:00', style: ts))),
-        Center(child: Text('non')),
-        Center(child: Text('مح1')),
-        Center(child: Text('مح2')),
-        Center(child: Text('مح3')),
-        Center(child: Text('مح5')),
-      ],
-    );
+        crossAxisCount: 6,
+        children: List.generate(36, (i) {
+          int time = (i / 6).floor();
+          int day = i % 6;
+          if (i < 6)
+            return Container(
+                color: i == 0 ? Colors.grey[700] : Colors.grey,
+                child: Center(child: Text(ss[i], style: ts)));
+          if (i % 6 == 0)
+            return Container(
+                color: Colors.grey[700],
+                child: Center(child: Text(times[time - 1], style: ts)));
+
+          String txt;
+          try {
+            txt = lecturelist
+                .firstWhere(
+                    (element) => element.day == day && element.time == time)
+                .programName;
+          } catch (e) {
+            txt = 'فراغ';
+          }
+
+          Color ths = time % 2 == 0 ? Colors.grey[300] : Colors.white;
+          return Container(
+              color: ths,
+              child: Padding(
+                  padding: EdgeInsets.only(right: 3),
+                  child: Center(child: Text(txt))));
+        }));
   }
 }

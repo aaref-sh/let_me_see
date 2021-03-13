@@ -1,9 +1,14 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:let_me_see/model/model.dart';
 import 'package:let_me_see/screens/Home.dart';
 import 'package:let_me_see/screens/Notifications.dart';
 import 'package:let_me_see/screens/TableScreen.dart';
 import 'package:line_icons/line_icons.dart';
+
+List<Lecture> lecturelist;
+List<Notificate> notificationlist = <Notificate>[];
 
 class Tabber extends StatefulWidget {
   @override
@@ -23,7 +28,6 @@ class _TabberState extends State<Tabber> {
       style: optionStyle,
     ),
   ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
