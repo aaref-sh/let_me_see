@@ -63,11 +63,10 @@ class _ApiConnectionState extends State<ApiConnection> {
         Notificate x = Notificate.fromMap(i);
         notificationlist.add(x);
       }
-      setState(() {});
     } catch (e) {
       lecturelist = <Lecture>[];
       unavilable = true;
-      setState(() {});
     }
+    setState(() {});
   }
 }

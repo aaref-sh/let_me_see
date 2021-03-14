@@ -120,14 +120,11 @@ class _LoginPageState extends State<LoginPage> {
         alert(context, false);
         return null;
       }
-
-      print(id + ' ' + password + ' ' + jsonData.toString());
       save(int.parse(id));
-      setState(() {});
     } catch (e) {
       alert(context, true);
-      setState(() {});
     }
+    setState(() {});
   }
 
   void alert(context, x) => showDialog(
