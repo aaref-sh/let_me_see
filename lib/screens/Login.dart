@@ -24,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
     idcontroller = new TextEditingController()..addListener(() {});
   }
 
+  int val;
   @override
   Widget build(BuildContext context) {
     Column widget = Column(
@@ -33,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
           child: TextField(
               textDirection: TextDirection.ltr,
               controller: idcontroller,
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.phone,
               decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: 'الرقم الجامعي',
@@ -45,7 +46,9 @@ class _LoginPageState extends State<LoginPage> {
           padding: EdgeInsets.only(left: 20, right: 20),
           child: TextField(
               textDirection: TextDirection.ltr,
+              keyboardType: TextInputType.visiblePassword,
               controller: passwordcontroller,
+              obscureText: true,
               decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: 'كلمة المرور',
@@ -73,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
     if (val == null) return LoadingPage('جاري التحقق من المستخدم...');
     if (val != 0) return ApiConnection(userId: val);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -135,13 +139,12 @@ class _LoginPageState extends State<LoginPage> {
                 ? "لا يمكن الوصول للخادم! تأكد من اتصالك بالانترنت"
                 : "لديك خطأ في إدخال الرقم الجامعي أو كلمة المرور"),
           ));
-  int val;
   save(int id) async {
     final prefs = await SharedPreferences.getInstance();
     final key = 'id';
-    final value = id;
-    prefs.setInt(key, value);
-    print('saved $value');
+    val = id;
+    prefs.setInt(key, val);
+    print('saved $val');
   }
 
   read() async {
