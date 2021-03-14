@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Lecture {
   int _day;
   int _time;
