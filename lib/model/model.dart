@@ -20,14 +20,17 @@ class Notificate {
   String _author;
   String _title;
   String _description;
+  int _authorId;
 
   String get author => this._author;
   String get title => this._title;
   String get description => this._description;
+  int get authorId => this._authorId;
 
   Notificate.fromMap(map) {
     this._author = map['teacher']['name'];
     this._title = map['title'];
     this._description = map['description'];
+    this._authorId = int.parse(map['author'].toString());
   }
 }

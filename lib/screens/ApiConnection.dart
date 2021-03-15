@@ -7,19 +7,22 @@ import 'package:let_me_see/screens/Tabber.dart';
 
 class ApiConnection extends StatefulWidget {
   final int userId; // receives the value
-  ApiConnection({Key key, this.userId}) : super(key: key);
+  final bool isateacher;
+  ApiConnection({Key key, this.userId, this.isateacher}) : super(key: key);
 
   @override
   _ApiConnectionState createState() => _ApiConnectionState();
 }
 
-class _ApiConnectionState extends State<ApiConnection> {
-  int studentId;
+int userId;
+bool isateacher;
 
+class _ApiConnectionState extends State<ApiConnection> {
   @override
   void initState() {
     super.initState();
-    studentId = widget.userId;
+    userId = widget.userId;
+    isateacher = widget.isateacher;
     getServerData();
   }
 
@@ -39,22 +42,26 @@ class _ApiConnectionState extends State<ApiConnection> {
 
   bool unavilable = false;
   getServerData() async {
-    var url = 'http://192.168.1.111:66/api/values/daystable/$studentId';
+    var url = 'http://192.168.1.111:66/api/values/daystable/$userId';
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json'
     };
+    http.Response response;
+    var jsonData;
     try {
-      var response = await http
-          .get(Uri.parse(url), headers: headers)
-          .timeout(Duration(seconds: 10), onTimeout: () {
-        return;
-      });
-      lecturelist = <Lecture>[];
-      var jsonData = json.decode(response.body);
-      for (var i in jsonData) {
-        Lecture l = Lecture.fromMap(i);
-        lecturelist.add(l);
+      if (!isateacher) {
+        response = await http
+            .get(Uri.parse(url), headers: headers)
+            .timeout(Duration(seconds: 10), onTimeout: () {
+          return;
+        });
+        jsonData = json.decode(response.body);
+        lecturelist = <Lecture>[];
+        for (var i in jsonData) {
+          Lecture l = Lecture.fromMap(i);
+          lecturelist.add(l);
+        }
       }
       url = 'http://192.168.1.111:66/api/values/notificationlist';
       response = await http.get(Uri.parse(url), headers: headers);
@@ -63,6 +70,7 @@ class _ApiConnectionState extends State<ApiConnection> {
         Notificate x = Notificate.fromMap(i);
         notificationlist.add(x);
       }
+      if (isateacher) lecturelist = <Lecture>[];
     } catch (e) {
       lecturelist = <Lecture>[];
       unavilable = true;

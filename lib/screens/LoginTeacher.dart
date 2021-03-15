@@ -1,19 +1,18 @@
 import 'dart:convert';
 import 'package:let_me_see/screens/ApiConnection.dart';
 import 'package:let_me_see/screens/LoadingPage.dart';
-import 'package:let_me_see/screens/LoginTeacher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:let_me_see/screens/Home.dart';
 import 'package:http/http.dart' as http;
 
-class LoginPage extends StatefulWidget {
+class LoginTeacherPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _LoginTeacherPageState createState() => _LoginTeacherPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  TextEditingController idcontroller;
+class _LoginTeacherPageState extends State<LoginTeacherPage> {
+  TextEditingController usernamecontroller;
   TextEditingController passwordcontroller;
 
   @override
@@ -21,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     read();
     passwordcontroller = new TextEditingController()..addListener(() {});
-    idcontroller = new TextEditingController()..addListener(() {});
+    usernamecontroller = new TextEditingController()..addListener(() {});
   }
 
   @override
@@ -31,12 +30,10 @@ class _LoginPageState extends State<LoginPage> {
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
           child: TextField(
-              textDirection: TextDirection.ltr,
-              controller: idcontroller,
-              keyboardType: TextInputType.phone,
+              controller: usernamecontroller,
               decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'الرقم الجامعي',
+                  hintText: 'اسم المستخدم',
                   icon: Icon(
                     Icons.person,
                   ))),
@@ -45,6 +42,7 @@ class _LoginPageState extends State<LoginPage> {
           padding: EdgeInsets.only(left: 20, right: 20),
           child: TextField(
               textDirection: TextDirection.ltr,
+              textAlign: TextAlign.right,
               keyboardType: TextInputType.visiblePassword,
               controller: passwordcontroller,
               obscureText: true,
@@ -68,12 +66,9 @@ class _LoginPageState extends State<LoginPage> {
               Icon(Icons.arrow_forward_ios_outlined),
               Expanded(
                   child: TextButton(
-                child: Text('دخول كمدرس'),
+                child: Text('دخول كطالب'),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginTeacherPage()),
-                  );
+                  Navigator.pop(context);
                 },
               )),
             ],
@@ -112,24 +107,24 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   checkinput() async {
-    String id = idcontroller.text;
+    String name = usernamecontroller.text;
     String password = passwordcontroller.text;
-    final url = Uri.parse('http://192.168.1.111:66/api/values/signin');
+    final url = Uri.parse('http://192.168.1.111:66/api/values/teachersignin');
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json'
     };
-    final body = json.encode({'Id': id, 'password': password});
+    final body = json.encode({'name': name, 'password': password});
     try {
       var response = await http
           .post(url, body: body, headers: headers)
           .timeout(Duration(seconds: 10), onTimeout: () {
         return;
       });
-      bool jsonData = json.decode(response.body);
+      int jsonData = json.decode(response.body);
 
-      if (jsonData == true) {
-        save(int.parse(id), false);
+      if (jsonData != 0) {
+        save(jsonData, true);
         setState(() {});
         return null;
       }
@@ -146,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
             title: Text(x ? "لا يمكن الاتصال بالخادم" : "بيانات دخول خاطئة"),
             content: Text(x
                 ? "لا يمكن الوصول للخادم! تأكد من اتصالك بالانترنت"
-                : "لديك خطأ في إدخال الرقم الجامعي أو كلمة المرور"),
+                : "لديك خطأ في إدخال اسم المستخدم أو كلمة المرور"),
           ));
 
   int val;

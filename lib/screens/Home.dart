@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:let_me_see/screens/Notifications.dart';
+import 'package:let_me_see/screens/Tabber.dart';
 import 'package:let_me_see/screens/TableScreen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -44,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(fontSize: 20, color: Colors.grey[700]),
           ),
           widget: Notifications(),
-          height: 250.0,
+          height: min(250.0, notificationlist.length * 75.0),
         ),
       ],
     );
