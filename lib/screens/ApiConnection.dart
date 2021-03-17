@@ -5,6 +5,8 @@ import 'package:let_me_see/model/model.dart';
 import 'package:let_me_see/screens/LoadingPage.dart';
 import 'package:let_me_see/screens/Tabber.dart';
 
+final _url = "http://192.168.1.111:66/";
+
 class ApiConnection extends StatefulWidget {
   final int userId; // receives the value
   final bool isateacher;
@@ -42,7 +44,7 @@ class _ApiConnectionState extends State<ApiConnection> {
 
   bool unavilable = false;
   getServerData() async {
-    var url = 'http://192.168.1.111:66/api/values/daystable/$userId';
+    var url = _url + 'api/values/daystable/$userId';
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json'
@@ -63,7 +65,7 @@ class _ApiConnectionState extends State<ApiConnection> {
           lecturelist.add(l);
         }
       }
-      url = 'http://192.168.1.111:66/api/values/notificationlist';
+      url = _url + 'api/values/notificationlist';
       response = await http.get(Uri.parse(url), headers: headers);
       jsonData = json.decode(response.body);
       for (var i in jsonData) {

@@ -5,6 +5,8 @@ import 'package:let_me_see/screens/Tabber.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:http/http.dart' as http;
 
+final _url = "http://192.168.1.111:66/";
+
 class Notifications extends StatefulWidget {
   @override
   _NotificationsState createState() => _NotificationsState();
@@ -56,8 +58,7 @@ class _NotificationsState extends State<Notifications> {
   }
 
   deleteNotification(i) async {
-    final url = Uri.parse(
-        'http://192.168.1.111:66/api/values/delete/${notificationlist[i].id}');
+    final url = Uri.parse(_url + 'api/values/delete/${notificationlist[i].id}');
     var headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json'

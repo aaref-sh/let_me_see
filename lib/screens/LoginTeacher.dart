@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:let_me_see/screens/Home.dart';
 import 'package:http/http.dart' as http;
 
+final _url = "http://192.168.1.111:66/";
+
 class LoginTeacherPage extends StatefulWidget {
   @override
   _LoginTeacherPageState createState() => _LoginTeacherPageState();
@@ -109,7 +111,7 @@ class _LoginTeacherPageState extends State<LoginTeacherPage> {
   checkinput() async {
     String name = usernamecontroller.text;
     String password = passwordcontroller.text;
-    final url = Uri.parse('http://192.168.1.111:66/api/values/teachersignin');
+    final url = Uri.parse(_url + 'api/values/teachersignin');
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json'
