@@ -3,9 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:let_me_see/screens/ApiConnection.dart';
 import 'package:let_me_see/screens/Tabber.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:http/http.dart' as http;
 
-class Notifications extends StatelessWidget {
+class Notifications extends StatefulWidget {
+  @override
+  _NotificationsState createState() => _NotificationsState();
+}
+
+class _NotificationsState extends State<Notifications> {
   final _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return getnotificationlist();
@@ -37,15 +44,26 @@ class Notifications extends StatelessWidget {
                 leading: Icon(LineIcons.bullhorn),
                 title: Text(notificationlist[n - i - 1].title),
                 onLongPress: () {
-                  if (notificationlist[n - i - 1].authorId == userId)
-                    print('delete $i item');
+                  if (notificationlist[n - i - 1].authorId == userId) {
+                    print('item $i deleted');
+                    deleteNotification(n - i - 1);
+                  }
                 },
-                // trailing: gettrailling(n - i - 1),
                 subtitle: Text('بواسطة: ' + notificationlist[i].author),
               );
             }));
     return list;
   }
 
-  deleteNotification(i) {}
+  deleteNotification(i) async {
+    final url = Uri.parse(
+        'http://192.168.1.111:66/api/values/delete/${notificationlist[i].id}');
+    var headers = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json'
+    };
+    await http.post(url, headers: headers).timeout(Duration(seconds: 10));
+    notificationlist.removeAt(i);
+    setState(() {});
+  }
 }

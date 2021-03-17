@@ -28,7 +28,6 @@ class _ApiConnectionState extends State<ApiConnection> {
 
   @override
   Widget build(BuildContext context) {
-    if (lecturelist == null) return LoadingPage('يجري الاتصال بالخادم');
     if (unavilable)
       return Scaffold(
           body: Center(
@@ -37,6 +36,7 @@ class _ApiConnectionState extends State<ApiConnection> {
         style: TextStyle(color: Colors.grey[600], fontSize: 30),
         textDirection: TextDirection.rtl,
       )));
+    if (lecturelist == null) return LoadingPage('يجري الاتصال بالخادم');
     return Tabber();
   }
 
@@ -72,7 +72,6 @@ class _ApiConnectionState extends State<ApiConnection> {
       }
       if (isateacher) lecturelist = <Lecture>[];
     } catch (e) {
-      lecturelist = <Lecture>[];
       unavilable = true;
     }
     setState(() {});
