@@ -6,6 +6,10 @@ import 'package:let_me_see/screens/LoadingPage.dart';
 import 'package:let_me_see/screens/Tabber.dart';
 
 final _url = "http://192.168.1.111:66/";
+Map<String, String> headers = {
+  'Content-type': 'application/json',
+  'Accept': 'application/json'
+};
 
 class ApiConnection extends StatefulWidget {
   final int userId; // receives the value
@@ -45,10 +49,7 @@ class _ApiConnectionState extends State<ApiConnection> {
   bool unavilable = false;
   getServerData() async {
     var url = _url + 'api/values/daystable/$userId';
-    Map<String, String> headers = {
-      'Content-type': 'application/json',
-      'Accept': 'application/json'
-    };
+
     http.Response response;
     var jsonData;
     try {
@@ -73,9 +74,23 @@ class _ApiConnectionState extends State<ApiConnection> {
         notificationlist.add(x);
       }
       if (isateacher) lecturelist = <Lecture>[];
+      await updatedoclist();
     } catch (e) {
       unavilable = true;
     }
     setState(() {});
+  }
+}
+
+updatedoclist() async {
+  doclist = <Doc>[];
+  var url =
+      _url + 'api/values/GetDocList/' + (isateacher ? userId.toString() : "");
+  var response = await http.get(Uri.parse(url), headers: headers);
+  var jsonData = json.decode(response.body);
+  for (var i in jsonData) {
+    Doc d = Doc.fromMap(i);
+    doclist.add(d);
+    print(i['path'].split('\\').last);
   }
 }

@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:let_me_see/model/model.dart';
+import 'package:let_me_see/screens/ApiConnection.dart';
 import 'package:let_me_see/screens/Home.dart';
 import 'package:let_me_see/screens/Notifications.dart';
 import 'package:let_me_see/screens/TableScreen.dart';
@@ -14,6 +16,7 @@ final _url = "http://192.168.1.111:66/";
 
 List<Lecture> lecturelist;
 List<Notificate> notificationlist = <Notificate>[];
+List<Doc> doclist = <Doc>[];
 
 class Tabber extends StatefulWidget {
   @override
@@ -28,11 +31,12 @@ class _TabberState extends State<Tabber> {
     HomeScreen(),
     TableScreen(),
     Notifications(),
-    PickFile(),
+    DocList(),
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: floatingb(),
       backgroundColor: Colors.white,
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
@@ -82,68 +86,104 @@ class _TabberState extends State<Tabber> {
       ),
     );
   }
+
+  var tooltips = ['إضافة إخطار', 'رفع ملف'];
+  var icons = [Icon(Icons.notifications_active), Icon(LineIcons.fileUpload)];
+  Widget floatingb() {
+    if (!isateacher || _selectedIndex < 2) return null;
+    return FloatingActionButton(
+      onPressed: () {
+        doit();
+      },
+      tooltip: tooltips[_selectedIndex - 2],
+      child: icons[_selectedIndex - 2],
+    );
+  }
+
+  doit() async {
+    if (_selectedIndex == 3) {
+      FilePickerResult result = await FilePicker.platform.pickFiles(
+          allowMultiple: true,
+          type: FileType.custom,
+          allowedExtensions: ['pdf']);
+      if (result != null) {
+        List<File> files = result.paths.map((path) => File(path)).toList();
+        for (var i in files) {
+          print(i.path.split("/").last);
+          await uploadFile(i);
+          setState(() {});
+        }
+      } else {
+        // User canceled the picker
+      }
+    }
+  }
 }
 
-class PickFile extends StatefulWidget {
+class DocList extends StatefulWidget {
   @override
-  _PickFileState createState() => _PickFileState();
+  _DocListState createState() => _DocListState();
 }
 
-class _PickFileState extends State<PickFile> {
+class _DocListState extends State<DocList> {
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Center(
-        child: Column(
-          children: [
-            Container(
-              height: 100,
-            ),
-            Container(
-                child: TextButton(
-                    onPressed: () {
-                      downloadfile();
-                    },
-                    child: Text("تحميل"))),
-            Container(
-              child: TextButton(
-                child: Text('اختر ملف'),
-                onPressed: () async {
-                  FilePickerResult result = await FilePicker.platform.pickFiles(
-                      allowMultiple: true,
-                      type: FileType.custom,
-                      allowedExtensions: ['pdf']);
-                  if (result != null) {
-                    List<File> files =
-                        result.paths.map((path) => File(path)).toList();
-                    for (var i in files) {
-                      print(i.path.split("/").last);
-                      uploadFile(i);
-                    }
-                  } else {
-                    // User canceled the picker
-                  }
-                },
-              ),
-            ),
-          ],
+        child: Container(
+          child: doclistbuilder(),
         ),
       ),
     );
   }
-}
 
-downloadfile() async {
-  String url = _url + "Home/Download";
-  await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
+  doclistbuilder() {
+    var list = ListView.builder(
+        itemCount: doclist.length,
+        itemBuilder: (context, i) {
+          return ListTile(
+            leading: Icon(LineIcons.pdfFile),
+            title: Text(doclist[i].name),
+            subtitle: Text('بواسطة ${doclist[i].owner}'),
+            trailing: IconButton(
+              icon: Icon(LineIcons.download),
+              onPressed: () {
+                downloadfile(doclist[i].id);
+              },
+            ),
+            onLongPress: () {
+              deletefile(doclist[i].id);
+            },
+          );
+        });
+    return list;
+  }
+
+  deletefile(int id) async {
+    if (doclist.where((element) => element.id == id).first.ownerid != userId)
+      return;
+    var url = _url + 'api/values/deletedoc/$id';
+    var response = await http.get(Uri.parse(url));
+    setState(() {
+      doclist.removeWhere((element) => element.id == id);
+      print(response.body);
+    });
+  }
+
+  downloadfile(int i) async {
+    String url = _url + "Home/Download/$i";
+    await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
+  }
 }
 
 uploadFile(File f) async {
-  var postUri = Uri.parse(_url + "api/values/upload");
+  var postUri = Uri.parse(_url + "api/values/upload/$userId");
   http.MultipartRequest request = new http.MultipartRequest("POST", postUri);
   http.MultipartFile multipartFile =
       await http.MultipartFile.fromPath(f.path.split("/").last, f.path);
   request.files.add(multipartFile);
   http.StreamedResponse response = await request.send();
+  await updatedoclist();
+
   print(response.statusCode);
 }

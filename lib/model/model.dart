@@ -37,3 +37,24 @@ class Notificate {
     this._authorId = int.parse(map['author'].toString());
   }
 }
+
+class Doc {
+  int _id;
+  int _ownerid;
+  String _owner;
+  String _name;
+
+  Doc(this._id, this._ownerid, this._name, this._owner);
+
+  int get id => this._id;
+  int get ownerid => this._ownerid;
+  String get owner => this._owner;
+  String get name => this._name;
+
+  Doc.fromMap(map) {
+    this._id = map['id'];
+    this._ownerid = int.parse(map['owner'].toString());
+    this._name = map['path'].split('\\').last;
+    this._owner = map['teacher']['name'];
+  }
+}

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:let_me_see/screens/ApiConnection.dart';
@@ -45,10 +47,10 @@ class _NotificationsState extends State<Notifications> {
               return ListTile(
                 leading: Icon(LineIcons.bullhorn),
                 title: Text(notificationlist[n - i - 1].title),
-                onLongPress: () {
+                onLongPress: () async {
                   if (notificationlist[n - i - 1].authorId == userId) {
                     print('item $i deleted');
-                    deleteNotification(n - i - 1);
+                    await deleteNotification(n - i - 1);
                   }
                 },
                 subtitle: Text('بواسطة: ' + notificationlist[i].author),
@@ -58,12 +60,23 @@ class _NotificationsState extends State<Notifications> {
   }
 
   deleteNotification(i) async {
-    final url = Uri.parse(_url + 'api/values/delete/${notificationlist[i].id}');
-    var headers = {
+    final url = Uri.parse(_url + 'api/values/del');
+    Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json'
     };
-    await http.post(url, headers: headers).timeout(Duration(seconds: 10));
+    final body = json.encode({'Id': notificationlist[i].id});
+    try {
+      var response = await http
+          .post(url, body: body, headers: headers)
+          .timeout(Duration(seconds: 10), onTimeout: () {
+        return;
+      });
+      print(response.body);
+    } catch (e) {
+      print(e);
+      return;
+    }
     notificationlist.removeAt(i);
     setState(() {});
   }
