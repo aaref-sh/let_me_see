@@ -55,8 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-TextStyle ts = TextStyle(color: Colors.white);
-
 class Carde extends StatelessWidget {
   final text;
   final widget;

@@ -82,22 +82,10 @@ class _TabberState extends State<Tabber> {
                 duration: Duration(milliseconds: 400),
                 tabBackgroundColor: Colors.grey[100],
                 tabs: [
-                  GButton(
-                    icon: LineIcons.home,
-                    text: 'الرئيسية',
-                  ),
-                  GButton(
-                    icon: LineIcons.fileInvoice,
-                    text: 'الطلبات',
-                  ),
-                  GButton(
-                    icon: LineIcons.bullhorn,
-                    text: 'الإعلانات',
-                  ),
-                  GButton(
-                    icon: LineIcons.pdfFile,
-                    text: 'المحاضرات',
-                  ),
+                  GButton(icon: LineIcons.home, text: 'الرئيسية'),
+                  GButton(icon: LineIcons.fileInvoice, text: 'الطلبات'),
+                  GButton(icon: LineIcons.bullhorn, text: 'الإعلانات'),
+                  GButton(icon: LineIcons.pdfFile, text: 'المحاضرات'),
                 ],
                 selectedIndex: selectedIndex,
                 onTabChange: (index) {
@@ -114,15 +102,22 @@ class _TabberState extends State<Tabber> {
   var tooltips = ['إضافة إخطار', 'رفع ملف'];
   var icons = [Icon(Icons.notifications_active), Icon(LineIcons.fileUpload)];
   Widget floatingb() {
-    if (!isateacher || selectedIndex < 2) return null;
-    return FloatingActionButton(
-      onPressed: () {
-        doit();
-      },
-      backgroundColor: Colors.grey[700],
-      tooltip: tooltips[selectedIndex - 2],
-      child: icons[selectedIndex - 2],
-    );
+    if (isateacher || selectedIndex > 1)
+      return FloatingActionButton(
+        onPressed: () {
+          doit();
+        },
+        backgroundColor: Colors.grey[700],
+        tooltip: tooltips[selectedIndex - 2],
+        child: icons[selectedIndex - 2],
+      );
+    if (selectedIndex == 1 && !isateacher)
+      return FloatingActionButton(
+        onPressed: () {},
+        tooltip: "طلب وثيقة",
+        child: Icon(LineIcons.paperHand),
+      );
+    return null;
   }
 
   doit() async {
@@ -233,7 +228,7 @@ class _TabberState extends State<Tabber> {
 
 showMaterialDialog(i, context) {
   var msgs = [
-    "تم رفع الملفات ✔",
+    'تم رفع الملفات ✔',
     'فشل رفع الملفات ⚠',
     'فشل حذف الملفات',
     'لا يمكن الوصول للخادم'

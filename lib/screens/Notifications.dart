@@ -27,16 +27,33 @@ class _NotificationsState extends State<Notifications> {
         child: ListView.builder(
             itemCount: n,
             controller: _scrollController,
-            itemBuilder: (BuildContext context, int i) {
+            itemBuilder: (BuildContext context, int index) {
+              int i = n - 1 - index;
               return ListTile(
                 leading: Icon(LineIcons.bullhorn),
-                title: Text(notificationlist[n - i - 1].title),
+                title: Text(notificationlist[i].title),
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                            title: Text(notificationlist[i].title),
+                            content: Text(notificationlist[i].description),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text('تم'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
+                          ));
+                },
                 onLongPress: () async {
-                  if (notificationlist[n - i - 1].authorId == userId) {
-                    await deleteConfirmationDialog(n - i - 1);
+                  if (notificationlist[i].authorId == userId) {
+                    await deleteConfirmationDialog(i);
                   }
                 },
-                subtitle: Text('بواسطة: ' + notificationlist[n - 1 - i].author),
+                subtitle: Text('بواسطة: ' + notificationlist[i].author),
               );
             }));
     return list;

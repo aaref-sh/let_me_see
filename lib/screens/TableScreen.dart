@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'GlobalVariables.dart';
-import 'Home.dart';
 
 List<String> times = ['8:00 ص', '10:00 ص', '12:00 م', '2:00 م', '4:00 م'];
 List<String> ss = [
@@ -23,11 +22,14 @@ class TableScreen extends StatelessWidget {
           if (i < 6)
             return Container(
                 color: i == 0 ? Colors.grey[700] : Colors.grey,
-                child: Center(child: Text(ss[i], style: ts)));
+                child: Center(
+                    child: Text(ss[i], style: TextStyle(color: Colors.white))));
           if (i % 6 == 0)
             return Container(
                 color: Colors.grey[700],
-                child: Center(child: Text(times[time - 1], style: ts)));
+                child: Center(
+                    child: Text(times[time - 1],
+                        style: TextStyle(color: Colors.white))));
 
           String txt;
           try {
