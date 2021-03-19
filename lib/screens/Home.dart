@@ -3,8 +3,9 @@ import 'dart:math';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:let_me_see/screens/Notifications.dart';
-import 'package:let_me_see/screens/Tabber.dart';
 import 'package:let_me_see/screens/TableScreen.dart';
+
+import 'GlobalVariables.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

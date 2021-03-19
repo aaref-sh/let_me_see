@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:let_me_see/screens/ApiConnection.dart';
+import 'package:let_me_see/screens/GlobalVariables.dart';
 import 'package:let_me_see/screens/LoadingPage.dart';
 import 'package:let_me_see/screens/LoginTeacher.dart';
 import 'package:shared_preferences/shared_preferences.dart';

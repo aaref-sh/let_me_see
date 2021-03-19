@@ -4,16 +4,13 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:http/http.dart' as http;
-import 'package:let_me_see/model/model.dart';
 import 'package:let_me_see/screens/ApiConnection.dart';
 import 'package:let_me_see/screens/DocList.dart';
 import 'package:let_me_see/screens/Home.dart';
 import 'package:let_me_see/screens/Notifications.dart';
 import 'package:line_icons/line_icons.dart';
 
-List<Lecture> lecturelist;
-List<Notificate> notificationlist = <Notificate>[];
-List<Doc> doclist = <Doc>[];
+import 'GlobalVariables.dart';
 
 class Tabber extends StatefulWidget {
   @override
@@ -27,13 +24,11 @@ class _TabberState extends State<Tabber> {
   @override
   void initState() {
     super.initState();
-    titlecontroller = new TextEditingController()..addListener(() {});
-    descrcontroller = new TextEditingController()..addListener(() {});
+    titlecontroller = TextEditingController()..addListener(() {});
+    descrcontroller = TextEditingController()..addListener(() {});
   }
 
-  int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
+  // static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
   @override
   Widget build(BuildContext context) {
     List<Widget> _widgetOptions = <Widget>[
@@ -68,7 +63,7 @@ class _TabberState extends State<Tabber> {
       floatingActionButton: floatingb(),
       backgroundColor: Colors.white,
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        child: _widgetOptions.elementAt(selectedIndex),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(color: Colors.white, boxShadow: [
@@ -104,10 +99,10 @@ class _TabberState extends State<Tabber> {
                     text: 'المحاضرات',
                   ),
                 ],
-                selectedIndex: _selectedIndex,
+                selectedIndex: selectedIndex,
                 onTabChange: (index) {
                   setState(() {
-                    _selectedIndex = index;
+                    selectedIndex = index;
                   });
                 }),
           ),
@@ -119,19 +114,19 @@ class _TabberState extends State<Tabber> {
   var tooltips = ['إضافة إخطار', 'رفع ملف'];
   var icons = [Icon(Icons.notifications_active), Icon(LineIcons.fileUpload)];
   Widget floatingb() {
-    if (!isateacher || _selectedIndex < 2) return null;
+    if (!isateacher || selectedIndex < 2) return null;
     return FloatingActionButton(
       onPressed: () {
         doit();
       },
       backgroundColor: Colors.grey[700],
-      tooltip: tooltips[_selectedIndex - 2],
-      child: icons[_selectedIndex - 2],
+      tooltip: tooltips[selectedIndex - 2],
+      child: icons[selectedIndex - 2],
     );
   }
 
   doit() async {
-    if (_selectedIndex == 3) {
+    if (selectedIndex == 3) {
       FilePickerResult result = await FilePicker.platform.pickFiles(
           allowMultiple: true,
           type: FileType.custom,

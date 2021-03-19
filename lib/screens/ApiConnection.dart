@@ -2,14 +2,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:let_me_see/model/model.dart';
+import 'package:let_me_see/screens/GlobalVariables.dart';
 import 'package:let_me_see/screens/LoadingPage.dart';
 import 'package:let_me_see/screens/Tabber.dart';
-
-final url0 = "http://192.168.1.111:66/";
-Map<String, String> headers = {
-  'Content-type': 'application/json',
-  'Accept': 'application/json'
-};
 
 class ApiConnection extends StatefulWidget {
   final int userId; // receives the value
@@ -19,9 +14,6 @@ class ApiConnection extends StatefulWidget {
   @override
   _ApiConnectionState createState() => _ApiConnectionState();
 }
-
-int userId;
-bool isateacher;
 
 class _ApiConnectionState extends State<ApiConnection> {
   @override

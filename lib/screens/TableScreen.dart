@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:let_me_see/screens/Tabber.dart';
+import 'GlobalVariables.dart';
 import 'Home.dart';
 
 List<String> times = ['8:00 ص', '10:00 ص', '12:00 م', '2:00 م', '4:00 م'];

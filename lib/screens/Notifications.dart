@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:let_me_see/screens/ApiConnection.dart';
-import 'package:let_me_see/screens/Tabber.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:http/http.dart' as http;
+
+import 'GlobalVariables.dart';
 
 class Notifications extends StatefulWidget {
   @override
