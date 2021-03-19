@@ -102,7 +102,7 @@ class _TabberState extends State<Tabber> {
   var tooltips = ['إضافة إخطار', 'رفع ملف'];
   var icons = [Icon(Icons.notifications_active), Icon(LineIcons.fileUpload)];
   Widget floatingb() {
-    if (isateacher || selectedIndex > 1)
+    if (isateacher && selectedIndex > 1)
       return FloatingActionButton(
         onPressed: () {
           doit();
