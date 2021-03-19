@@ -7,8 +7,6 @@ import 'package:let_me_see/screens/Tabber.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:http/http.dart' as http;
 
-final _url = "http://192.168.1.111:66/";
-
 class Notifications extends StatefulWidget {
   @override
   _NotificationsState createState() => _NotificationsState();
@@ -20,20 +18,6 @@ class _NotificationsState extends State<Notifications> {
   @override
   Widget build(BuildContext context) {
     return getnotificationlist();
-  }
-
-  gettrailling(i) {
-    if (notificationlist[i].authorId == userId)
-      return Container(
-        width: 30,
-        child: TextButton(
-            child: Icon(Icons.delete_forever_outlined),
-            onPressed: deleteNotification(i)),
-      );
-    else
-      return Container(
-        width: 30,
-      );
   }
 
   getnotificationlist() {
@@ -49,22 +33,17 @@ class _NotificationsState extends State<Notifications> {
                 title: Text(notificationlist[n - i - 1].title),
                 onLongPress: () async {
                   if (notificationlist[n - i - 1].authorId == userId) {
-                    print('item $i deleted');
-                    await deleteNotification(n - i - 1);
+                    await deleteConfirmationDialog(n - i - 1);
                   }
                 },
-                subtitle: Text('بواسطة: ' + notificationlist[i].author),
+                subtitle: Text('بواسطة: ' + notificationlist[n - 1 - i].author),
               );
             }));
     return list;
   }
 
   deleteNotification(i) async {
-    final url = Uri.parse(_url + 'api/values/del');
-    Map<String, String> headers = {
-      'Content-type': 'application/json',
-      'Accept': 'application/json'
-    };
+    final url = Uri.parse(url0 + 'api/values/del');
     final body = json.encode({'Id': notificationlist[i].id});
     try {
       var response = await http
@@ -72,6 +51,7 @@ class _NotificationsState extends State<Notifications> {
           .timeout(Duration(seconds: 10), onTimeout: () {
         return;
       });
+      print('item $i deleted');
       print(response.body);
     } catch (e) {
       print(e);
@@ -79,5 +59,33 @@ class _NotificationsState extends State<Notifications> {
     }
     notificationlist.removeAt(i);
     setState(() {});
+  }
+
+  deleteConfirmationDialog(id) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('هل تريد بالتأكيد حذف الإعلان؟'),
+          content: Text('لا يمكنك التراجع بعد الحذف'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('نعم'),
+              onPressed: () {
+                deleteNotification(id);
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('لا'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -6,13 +6,10 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:let_me_see/model/model.dart';
 import 'package:let_me_see/screens/ApiConnection.dart';
+import 'package:let_me_see/screens/DocList.dart';
 import 'package:let_me_see/screens/Home.dart';
 import 'package:let_me_see/screens/Notifications.dart';
-import 'package:let_me_see/screens/TableScreen.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-final _url = "http://192.168.1.111:66/";
 
 List<Lecture> lecturelist;
 List<Notificate> notificationlist = <Notificate>[];
@@ -24,17 +21,49 @@ class Tabber extends StatefulWidget {
 }
 
 class _TabberState extends State<Tabber> {
+  TextEditingController titlecontroller;
+  TextEditingController descrcontroller;
+
+  @override
+  void initState() {
+    super.initState();
+    titlecontroller = new TextEditingController()..addListener(() {});
+    descrcontroller = new TextEditingController()..addListener(() {});
+  }
+
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
-  static List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(),
-    TableScreen(),
-    Notifications(),
-    DocList(),
-  ];
   @override
   Widget build(BuildContext context) {
+    List<Widget> _widgetOptions = <Widget>[
+      HomeScreen(),
+      Container(
+        child: Text('rqs'),
+      ),
+      SafeArea(
+          child: Column(
+        children: [
+          Center(
+              child: Container(
+                  width: MediaQuery.of(context).size.width - 100,
+                  decoration: BoxDecoration(
+                      border: Border(
+                    bottom: BorderSide(width: 1, color: Colors.grey),
+                  )),
+                  child: Center(
+                      child: Text(
+                    'قائمة الإعلانات',
+                    style: TextStyle(color: Colors.grey[800], fontSize: 20),
+                  )))),
+          Container(
+            height: MediaQuery.of(context).size.height - 125,
+            child: Notifications(),
+          )
+        ],
+      )),
+      DocList(),
+    ];
     return Scaffold(
       floatingActionButton: floatingb(),
       backgroundColor: Colors.white,
@@ -63,16 +92,16 @@ class _TabberState extends State<Tabber> {
                     text: 'الرئيسية',
                   ),
                   GButton(
-                    icon: LineIcons.table,
-                    text: 'الجدول',
+                    icon: LineIcons.fileInvoice,
+                    text: 'الطلبات',
                   ),
                   GButton(
                     icon: LineIcons.bullhorn,
-                    text: 'الإعلانانات',
+                    text: 'الإعلانات',
                   ),
                   GButton(
-                    icon: LineIcons.fileInvoice,
-                    text: 'الطلبات',
+                    icon: LineIcons.pdfFile,
+                    text: 'المحاضرات',
                   ),
                 ],
                 selectedIndex: _selectedIndex,
@@ -95,6 +124,7 @@ class _TabberState extends State<Tabber> {
       onPressed: () {
         doit();
       },
+      backgroundColor: Colors.grey[700],
       tooltip: tooltips[_selectedIndex - 2],
       child: icons[_selectedIndex - 2],
     );
@@ -111,79 +141,119 @@ class _TabberState extends State<Tabber> {
         for (var i in files) {
           print(i.path.split("/").last);
           await uploadFile(i);
-          setState(() {});
         }
-      } else {
-        // User canceled the picker
       }
+    } else {
+      createNotification();
     }
+    setState(() {});
   }
-}
 
-class DocList extends StatefulWidget {
-  @override
-  _DocListState createState() => _DocListState();
-}
-
-class _DocListState extends State<DocList> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Container(
-          child: doclistbuilder(),
-        ),
-      ),
+  createNotification() {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          //title: Text('نشر إخطار للطلاب'),
+          content: Container(
+            height: 150,
+            child: Column(
+              children: [
+                Text('نشر إخطار للطلاب'),
+                TextField(
+                    controller: titlecontroller,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'العنوان',
+                    )),
+                Spacer(),
+                TextField(
+                    controller: descrcontroller,
+                    maxLines: 2,
+                    minLines: 1,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'الوصف',
+                    ))
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('نشر'),
+              onPressed: () async {
+                var url = url0 + 'api/values/addnotification';
+                var body = json.encode({
+                  'author': userId,
+                  'title': titlecontroller.text,
+                  'description': descrcontroller.text
+                });
+                var response;
+                try {
+                  response = await http
+                      .post(Uri.parse(url), body: body, headers: headers)
+                      .timeout(Duration(seconds: 10), onTimeout: () {
+                    showMaterialDialog(3, context);
+                    return;
+                  });
+                  updatenotificationlist();
+                } catch (e) {
+                  if (response.statusCode != 204) {
+                    showMaterialDialog(3, context);
+                    return;
+                  }
+                }
+                setState(() {
+                  print(response.body);
+                });
+              },
+            ),
+            TextButton(
+              child: Text('إلغاء'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
-  doclistbuilder() {
-    var list = ListView.builder(
-        itemCount: doclist.length,
-        itemBuilder: (context, i) {
-          return ListTile(
-            leading: Icon(LineIcons.pdfFile),
-            title: Text(doclist[i].name),
-            subtitle: Text('بواسطة ${doclist[i].owner}'),
-            trailing: IconButton(
-              icon: Icon(LineIcons.download),
-              onPressed: () {
-                downloadfile(doclist[i].id);
-              },
-            ),
-            onLongPress: () {
-              deletefile(doclist[i].id);
-            },
-          );
-        });
-    return list;
-  }
-
-  deletefile(int id) async {
-    if (doclist.where((element) => element.id == id).first.ownerid != userId)
-      return;
-    var url = _url + 'api/values/deletedoc/$id';
-    var response = await http.get(Uri.parse(url));
-    setState(() {
-      doclist.removeWhere((element) => element.id == id);
-      print(response.body);
-    });
-  }
-
-  downloadfile(int i) async {
-    String url = _url + "Home/Download/$i";
-    await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
+  uploadFile(File f) async {
+    var postUri = Uri.parse(url0 + "api/values/upload/$userId");
+    http.MultipartRequest request = new http.MultipartRequest("POST", postUri);
+    http.MultipartFile multipartFile =
+        await http.MultipartFile.fromPath(f.path.split("/").last, f.path);
+    request.files.add(multipartFile);
+    http.StreamedResponse response = await request.send();
+    await updatedoclist();
+    response.statusCode == 200
+        ? showMaterialDialog(0, context)
+        : showMaterialDialog(1, context);
+    print(response.statusCode);
   }
 }
 
-uploadFile(File f) async {
-  var postUri = Uri.parse(_url + "api/values/upload/$userId");
-  http.MultipartRequest request = new http.MultipartRequest("POST", postUri);
-  http.MultipartFile multipartFile =
-      await http.MultipartFile.fromPath(f.path.split("/").last, f.path);
-  request.files.add(multipartFile);
-  http.StreamedResponse response = await request.send();
-  await updatedoclist();
-
-  print(response.statusCode);
+showMaterialDialog(i, context) {
+  var msgs = [
+    "تم رفع الملفات ✔",
+    'فشل رفع الملفات ⚠',
+    'فشل حذف الملفات',
+    'لا يمكن الوصول للخادم'
+  ];
+  showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+            title: Text(msgs[i]),
+            actions: <Widget>[
+              TextButton(
+                child: Text('تم'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          ));
 }

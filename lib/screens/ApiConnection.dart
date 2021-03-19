@@ -5,7 +5,7 @@ import 'package:let_me_see/model/model.dart';
 import 'package:let_me_see/screens/LoadingPage.dart';
 import 'package:let_me_see/screens/Tabber.dart';
 
-final _url = "http://192.168.1.111:66/";
+final url0 = "http://192.168.1.111:66/";
 Map<String, String> headers = {
   'Content-type': 'application/json',
   'Accept': 'application/json'
@@ -48,7 +48,7 @@ class _ApiConnectionState extends State<ApiConnection> {
 
   bool unavilable = false;
   getServerData() async {
-    var url = _url + 'api/values/daystable/$userId';
+    var url = url0 + 'api/values/daystable/$userId';
 
     http.Response response;
     var jsonData;
@@ -66,13 +66,7 @@ class _ApiConnectionState extends State<ApiConnection> {
           lecturelist.add(l);
         }
       }
-      url = _url + 'api/values/notificationlist';
-      response = await http.get(Uri.parse(url), headers: headers);
-      jsonData = json.decode(response.body);
-      for (var i in jsonData) {
-        Notificate x = Notificate.fromMap(i);
-        notificationlist.add(x);
-      }
+      await updatenotificationlist();
       if (isateacher) lecturelist = <Lecture>[];
       await updatedoclist();
     } catch (e) {
@@ -85,12 +79,31 @@ class _ApiConnectionState extends State<ApiConnection> {
 updatedoclist() async {
   doclist = <Doc>[];
   var url =
-      _url + 'api/values/GetDocList/' + (isateacher ? userId.toString() : "");
-  var response = await http.get(Uri.parse(url), headers: headers);
+      url0 + 'api/values/GetDocList/' + (isateacher ? userId.toString() : "");
+  var response = await http
+      .get(Uri.parse(url), headers: headers)
+      .timeout(Duration(seconds: 10), onTimeout: () {
+    return;
+  });
   var jsonData = json.decode(response.body);
   for (var i in jsonData) {
     Doc d = Doc.fromMap(i);
     doclist.add(d);
     print(i['path'].split('\\').last);
+  }
+}
+
+updatenotificationlist() async {
+  notificationlist = <Notificate>[];
+  var url = url0 + 'api/values/notificationlist';
+  var response = await http
+      .get(Uri.parse(url), headers: headers)
+      .timeout(Duration(seconds: 10), onTimeout: () {
+    return;
+  });
+  var jsonData = json.decode(response.body);
+  for (var i in jsonData) {
+    Notificate x = Notificate.fromMap(i);
+    notificationlist.add(x);
   }
 }
