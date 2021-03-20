@@ -99,3 +99,18 @@ updatenotificationlist() async {
     notificationlist.add(x);
   }
 }
+
+updaterequestlist() async {
+  if (!isateacher) {
+    requestlist = <Requst>[];
+    var body = json.encode({'Id': userId.toString()});
+    var url = url0 + 'api/values/requestlist';
+    var response =
+        await http.post(Uri.parse(url), body: body, headers: headers);
+    var jsonData = json.decode(response.body);
+    for (var i in jsonData) {
+      var x = Requst.fromMap(i);
+      requestlist.add(x);
+    }
+  }
+}

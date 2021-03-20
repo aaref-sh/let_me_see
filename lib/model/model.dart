@@ -1,3 +1,5 @@
+import 'package:http/http.dart';
+
 class Lecture {
   int _day;
   int _time;
@@ -56,5 +58,27 @@ class Doc {
     this._ownerid = int.parse(map['owner'].toString());
     this._name = map['path'].split('\\').last;
     this._owner = map['teacher']['name'];
+  }
+}
+
+class Requst {
+  int _id;
+  int _typeId;
+  int _statusId;
+  String _type;
+  String _status;
+
+  int get id => this._id;
+  int get typeId => this._typeId;
+  int get statusId => this._statusId;
+  String get type => this._type;
+  String get status => this._status;
+
+  Requst.fromMap(map) {
+    this._id = int.parse(map['id'].toString());
+    this._typeId = int.parse(map['request_type'].toString());
+    this._statusId = int.parse(map['status'].toString());
+    this._type = map['request_type1']['name'];
+    this._status = map['status1']['status1'].toString();
   }
 }

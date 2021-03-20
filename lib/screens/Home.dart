@@ -34,14 +34,15 @@ class _HomeScreenState extends State<HomeScreen> {
               dotBgColor: Colors.purple.withOpacity(0.5),
               borderRadius: true,
             )),
-        Carde(
-          text: Text(
-            'الجدول',
-            style: TextStyle(fontSize: 20, color: Colors.grey[700]),
+        if (!isateacher)
+          Carde(
+            text: Text(
+              'الجدول',
+              style: TextStyle(fontSize: 20, color: Colors.grey[700]),
+            ),
+            widget: TableScreen(),
+            height: 250.0,
           ),
-          widget: TableScreen(),
-          height: 250.0,
-        ),
         Carde(
           text: Text(
             'الإعلانات',
