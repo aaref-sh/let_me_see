@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:let_me_see/model/model.dart';
 import 'GlobalVariables.dart';
 
-List<String> times = ['8:00 ص', '10:00 ص', '12:00 م', '2:00 م', '4:00 م'];
+List<String> times = ['8:30 ص', '10:00 ص', '11:30 ص', '1:00 م', '2:30 م'];
 List<String> ss = [
   'الوقت',
   'الأحد',
@@ -31,14 +32,20 @@ class TableScreen extends StatelessWidget {
                     child: Text(times[time - 1],
                         style: TextStyle(color: Colors.white))));
 
-          String txt;
+          Widget lec;
           try {
-            txt = lecturelist
-                .firstWhere(
-                    (element) => element.day == day && element.time == time)
-                .programName;
+            Lecture l = lecturelist.firstWhere(
+                (element) => element.day == day && element.time == time);
+            lec = GestureDetector(
+              child: Text(l.programName),
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(title: Text(l.hall)));
+              },
+            );
           } catch (e) {
-            txt = 'فراغ';
+            lec = Text('فراغ');
           }
 
           Color ths = time % 2 == 0 ? Colors.grey[300] : Colors.white;
@@ -46,7 +53,7 @@ class TableScreen extends StatelessWidget {
               color: ths,
               child: Padding(
                   padding: EdgeInsets.only(right: 3),
-                  child: Center(child: Text(txt))));
+                  child: Center(child: lec)));
         }));
   }
 }

@@ -61,6 +61,7 @@ class _ApiConnectionState extends State<ApiConnection> {
       await updatenotificationlist();
       if (isateacher) lecturelist = <Lecture>[];
       await updatedoclist();
+      await updaterequestlist();
     } catch (e) {
       unavilable = true;
     }
@@ -71,7 +72,7 @@ class _ApiConnectionState extends State<ApiConnection> {
 updatedoclist() async {
   doclist = <Doc>[];
   var url =
-      url0 + 'api/values/GetDocList/' + (isateacher ? userId.toString() : "");
+      url0 + 'api/values/GetDocList/' + (isateacher ? userId.toString() : "0");
   var response = await http
       .get(Uri.parse(url), headers: headers)
       .timeout(Duration(seconds: 10), onTimeout: () {
@@ -103,7 +104,7 @@ updatenotificationlist() async {
 updaterequestlist() async {
   if (!isateacher) {
     requestlist = <Requst>[];
-    var body = json.encode({'Id': userId.toString()});
+    var body = json.encode({'Id': userId});
     var url = url0 + 'api/values/requestlist';
     var response =
         await http.post(Uri.parse(url), body: body, headers: headers);

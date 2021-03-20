@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'ApiConnection.dart';
 import 'GlobalVariables.dart';
 import 'Tabber.dart';
 import 'package:http/http.dart' as http;
@@ -20,18 +23,21 @@ class _DocListState extends State<DocList> {
           children: [
             Center(
                 child: Container(
-                    width: MediaQuery.of(context).size.width - 100,
+                    width: MediaQuery.of(context).size.width - 70,
                     decoration: BoxDecoration(
                         border: Border(
                       bottom: BorderSide(width: 1, color: Colors.grey),
                     )),
-                    child: Center(
-                        child: Text(
-                      'ملفات المحاضرات الالكتونية',
-                      style: TextStyle(color: Colors.grey[800], fontSize: 20),
-                    )))),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 13.0),
+                      child: Center(
+                          child: Text(
+                        'ملفات المحاضرات الالكترونية',
+                        style: TextStyle(color: Colors.grey[600], fontSize: 28),
+                      )),
+                    ))),
             Container(
-              height: MediaQuery.of(context).size.height - 125,
+              height: MediaQuery.of(context).size.height - 150,
               child: doclistbuilder(),
             )
           ],
@@ -119,4 +125,18 @@ class _DocListState extends State<DocList> {
     String url = url0 + "Home/Download/$i";
     await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
   }
+}
+
+uploadFile(File f, context) async {
+  var postUri = Uri.parse(url0 + "api/values/upload/$userId");
+  http.MultipartRequest request = new http.MultipartRequest("POST", postUri);
+  http.MultipartFile multipartFile =
+      await http.MultipartFile.fromPath(f.path.split("/").last, f.path);
+  request.files.add(multipartFile);
+  http.StreamedResponse response = await request.send();
+  await updatedoclist();
+  response.statusCode == 200
+      ? showMaterialDialog(0, context)
+      : showMaterialDialog(1, context);
+  print(response.statusCode);
 }

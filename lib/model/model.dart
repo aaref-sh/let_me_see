@@ -1,20 +1,19 @@
-import 'package:http/http.dart';
-
 class Lecture {
   int _day;
   int _time;
   String _programName;
+  String _hall;
 
   int get day => this._day;
   int get time => this._time;
   String get programName => this._programName;
-
-  Lecture(this._day, this._programName, this._time);
+  String get hall => this._hall;
 
   Lecture.fromMap(map) {
     this._time = int.parse(map['lecture_at_id'].toString());
     this._day = int.parse(map['dayinweek'].toString());
     this._programName = map['name'];
+    this._hall = map['hall']['name'];
   }
 }
 

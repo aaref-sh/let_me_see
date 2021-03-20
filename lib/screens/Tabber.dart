@@ -4,10 +4,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:http/http.dart' as http;
+import 'package:let_me_see/model/model.dart';
 import 'package:let_me_see/screens/ApiConnection.dart';
 import 'package:let_me_see/screens/DocList.dart';
 import 'package:let_me_see/screens/Home.dart';
 import 'package:let_me_see/screens/Notifications.dart';
+import 'package:let_me_see/screens/RequestList.dart';
 import 'package:line_icons/line_icons.dart';
 
 import 'GlobalVariables.dart';
@@ -33,30 +35,8 @@ class _TabberState extends State<Tabber> {
   Widget build(BuildContext context) {
     List<Widget> _widgetOptions = <Widget>[
       HomeScreen(),
-      Container(
-        child: Text('rqs'),
-      ),
-      SafeArea(
-          child: Column(
-        children: [
-          Center(
-              child: Container(
-                  width: MediaQuery.of(context).size.width - 100,
-                  decoration: BoxDecoration(
-                      border: Border(
-                    bottom: BorderSide(width: 1, color: Colors.grey),
-                  )),
-                  child: Center(
-                      child: Text(
-                    'قائمة الإعلانات',
-                    style: TextStyle(color: Colors.grey[800], fontSize: 20),
-                  )))),
-          Container(
-            height: MediaQuery.of(context).size.height - 125,
-            child: Notifications(),
-          )
-        ],
-      )),
+      if (!isateacher) RequestList(),
+      NotificationList(),
       DocList(),
     ];
     return Scaffold(
@@ -83,7 +63,8 @@ class _TabberState extends State<Tabber> {
                 tabBackgroundColor: Colors.grey[100],
                 tabs: [
                   GButton(icon: LineIcons.home, text: 'الرئيسية'),
-                  GButton(icon: LineIcons.fileInvoice, text: 'الطلبات'),
+                  if (!isateacher)
+                    GButton(icon: LineIcons.fileInvoice, text: 'الطلبات'),
                   GButton(icon: LineIcons.bullhorn, text: 'الإعلانات'),
                   GButton(icon: LineIcons.pdfFile, text: 'المحاضرات'),
                 ],
@@ -104,22 +85,72 @@ class _TabberState extends State<Tabber> {
   Widget floatingb() {
     if (isateacher && selectedIndex > 1)
       return FloatingActionButton(
-        onPressed: () {
-          doit();
-        },
+        onPressed: () => doit(),
         backgroundColor: Colors.grey[700],
         tooltip: tooltips[selectedIndex - 2],
         child: icons[selectedIndex - 2],
       );
     if (selectedIndex == 1 && !isateacher)
       return FloatingActionButton(
-        onPressed: () {
-          var url = Uri.parse(url0 + 'api/values/addrequest/');
-          var body = json.encode({'value'});
-          // var response = http.post(url:url,body:,headers: headers);
+        backgroundColor: Colors.grey[700],
+        onPressed: () async {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  content: StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          DropdownButton<String>(
+                            value: dropdownValue,
+                            icon: const Icon(
+                                Icons.arrow_drop_down_circle_outlined),
+                            onChanged: (newValue) {
+                              setState(() => dropdownValue = newValue);
+                            },
+                            items: spinnerItems
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                  value: value, child: Text(value));
+                            }).toList(),
+                          )
+                        ],
+                      );
+                    },
+                  ),
+                  actions: [
+                    TextButton(
+                        onPressed: () async {
+                          try {
+                            var url = Uri.parse(url0 +
+                                'api/values/addrequest?s=$dropdownValue');
+                            var body =
+                                json.encode({"requester": userId, "status": 1});
+                            var response = await http
+                                .post(url, body: body, headers: headers)
+                                .timeout(Duration(seconds: 10), onTimeout: () {
+                              showMaterialDialog(3, context);
+                            });
+                            print(json.decode(response.body));
+                          } catch (_) {}
+                          Navigator.pop(context);
+                          await updaterequestlist();
+                          setState(() {});
+                        },
+                        child: Text('طلب')),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text('إلغاء'))
+                  ],
+                );
+              });
         },
         tooltip: "طلب وثيقة",
-        child: Icon(LineIcons.paperHand),
+        child: Icon(LineIcons.fileContract),
       );
     return null;
   }
@@ -134,7 +165,7 @@ class _TabberState extends State<Tabber> {
         List<File> files = result.paths.map((path) => File(path)).toList();
         for (var i in files) {
           print(i.path.split("/").last);
-          await uploadFile(i);
+          await uploadFile(i, context);
         }
       }
     } else {
@@ -214,40 +245,4 @@ class _TabberState extends State<Tabber> {
       },
     );
   }
-
-  uploadFile(File f) async {
-    var postUri = Uri.parse(url0 + "api/values/upload/$userId");
-    http.MultipartRequest request = new http.MultipartRequest("POST", postUri);
-    http.MultipartFile multipartFile =
-        await http.MultipartFile.fromPath(f.path.split("/").last, f.path);
-    request.files.add(multipartFile);
-    http.StreamedResponse response = await request.send();
-    await updatedoclist();
-    response.statusCode == 200
-        ? showMaterialDialog(0, context)
-        : showMaterialDialog(1, context);
-    print(response.statusCode);
-  }
-}
-
-showMaterialDialog(i, context) {
-  var msgs = [
-    'تم رفع الملفات ✔',
-    'فشل رفع الملفات ⚠',
-    'فشل حذف الملفات',
-    'لا يمكن الوصول للخادم'
-  ];
-  showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-            title: Text(msgs[i]),
-            actions: <Widget>[
-              TextButton(
-                child: Text('تم'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          ));
 }

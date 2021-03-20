@@ -7,6 +7,40 @@ import 'package:http/http.dart' as http;
 
 import 'GlobalVariables.dart';
 
+class NotificationList extends StatelessWidget {
+  const NotificationList({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+        child: Column(
+      children: [
+        Center(
+            child: Container(
+                width: MediaQuery.of(context).size.width - 100,
+                decoration: BoxDecoration(
+                    border: Border(
+                  bottom: BorderSide(width: 1, color: Colors.grey),
+                )),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Center(
+                      child: Text(
+                    'قائمة الإعلانات',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 28),
+                  )),
+                ))),
+        Container(
+          height: MediaQuery.of(context).size.height - 150,
+          child: Notifications(),
+        )
+      ],
+    ));
+  }
+}
+
 class Notifications extends StatefulWidget {
   @override
   _NotificationsState createState() => _NotificationsState();
