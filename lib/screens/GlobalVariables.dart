@@ -1,10 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:let_me_see/model/model.dart';
-import 'package:let_me_see/screens/ApiConnection.dart';
-import 'package:line_icons/line_icons.dart';
-import 'package:http/http.dart' as http;
 
 List<Lecture> lecturelist;
 List<Notificate> notificationlist;

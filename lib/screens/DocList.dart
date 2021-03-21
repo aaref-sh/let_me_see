@@ -5,7 +5,6 @@ import 'package:line_icons/line_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'ApiConnection.dart';
 import 'GlobalVariables.dart';
-import 'Tabber.dart';
 import 'package:http/http.dart' as http;
 
 class DocList extends StatefulWidget {

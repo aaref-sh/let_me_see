@@ -4,7 +4,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:http/http.dart' as http;
-import 'package:let_me_see/model/model.dart';
 import 'package:let_me_see/screens/ApiConnection.dart';
 import 'package:let_me_see/screens/DocList.dart';
 import 'package:let_me_see/screens/Home.dart';
@@ -208,30 +207,35 @@ class _TabberState extends State<Tabber> {
             TextButton(
               child: Text('نشر'),
               onPressed: () async {
-                var url = url0 + 'api/values/addnotification';
-                var body = json.encode({
-                  'author': userId,
-                  'title': titlecontroller.text,
-                  'description': descrcontroller.text
-                });
-                var response;
-                try {
-                  response = await http
-                      .post(Uri.parse(url), body: body, headers: headers)
-                      .timeout(Duration(seconds: 10), onTimeout: () {
-                    showMaterialDialog(3, context);
-                    return;
+                if (titlecontroller.text != null) if (titlecontroller.text !=
+                    "") {
+                  var url = url0 + 'api/values/addnotification';
+                  var body = json.encode({
+                    'author': userId,
+                    'title': titlecontroller.text,
+                    'description': descrcontroller.text
                   });
-                  updatenotificationlist();
-                } catch (e) {
-                  if (response.statusCode != 204) {
-                    showMaterialDialog(3, context);
-                    return;
+                  var response;
+                  try {
+                    response = await http
+                        .post(Uri.parse(url), body: body, headers: headers)
+                        .timeout(Duration(seconds: 10), onTimeout: () {
+                      showMaterialDialog(3, context);
+                      return;
+                    });
+                    updatenotificationlist();
+                  } catch (e) {
+                    if (response.statusCode != 204) {
+                      showMaterialDialog(3, context);
+                      return;
+                    }
                   }
+                  setState(() {
+                    print(response.body);
+                  });
                 }
-                setState(() {
-                  print(response.body);
-                });
+                titlecontroller.text = descrcontroller.text = "";
+                Navigator.pop(context);
               },
             ),
             TextButton(

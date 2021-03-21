@@ -2,7 +2,7 @@
     package="com.example.let_me_see">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="let_me_see"
+        android:label="الزاجل"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
