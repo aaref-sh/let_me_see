@@ -83,12 +83,12 @@ class _TabberState extends State<Tabber> {
   var tooltips = ['إضافة إخطار', 'رفع ملف'];
   var icons = [Icon(Icons.notifications_active), Icon(LineIcons.fileUpload)];
   Widget floatingb() {
-    if (isateacher && selectedIndex > 1)
+    if (isateacher && selectedIndex > 0)
       return FloatingActionButton(
         onPressed: () => doit(),
         backgroundColor: Colors.grey[700],
-        tooltip: tooltips[selectedIndex - 2],
-        child: icons[selectedIndex - 2],
+        tooltip: tooltips[selectedIndex - 1],
+        child: icons[selectedIndex - 1],
       );
     if (selectedIndex == 1 && !isateacher)
       return FloatingActionButton(
@@ -156,7 +156,7 @@ class _TabberState extends State<Tabber> {
   }
 
   doit() async {
-    if (selectedIndex == 3) {
+    if (selectedIndex == 2) {
       FilePickerResult result = await FilePicker.platform.pickFiles(
           allowMultiple: true,
           type: FileType.custom,
