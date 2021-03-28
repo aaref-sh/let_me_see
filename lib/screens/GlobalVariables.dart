@@ -5,7 +5,7 @@ List<Lecture> lecturelist;
 List<Notificate> notificationlist;
 List<Doc> doclist;
 List<Requst> requestlist;
-
+List<Mark> marklist;
 final url0 = "http://192.168.1.111:66/";
 
 Map<String, String> headers = {

@@ -6,7 +6,7 @@ void main() async {
       builder: (context, child) {
         return Directionality(textDirection: TextDirection.rtl, child: child);
       },
-      title: 'الزاجل',
+      title: 'Student Services',
       theme: ThemeData(
         primaryColor: Colors.grey[800],
       ),

@@ -15,6 +15,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    var u = 's';
+    if (isateacher) u = 't';
     return ListView(
       children: [
         SizedBox(
@@ -22,10 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
             width: MediaQuery.of(context).size.width,
             child: Carousel(
               images: [
-                NetworkImage(
-                    'https://cdn-images-1.medium.com/max/2000/1*GqdzzfB_BHorv7V2NV7Jgg.jpeg'),
-                NetworkImage(
-                    'https://cdn-images-1.medium.com/max/2000/1*wnIEgP1gNMrK5gZU7QS0-A.jpeg')
+                for (int i = 1; i <= 5; i++) Image.asset('images/$u$i.jpg'),
               ],
               dotSize: 4.0,
               dotSpacing: 15.0,
@@ -49,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(fontSize: 20, color: Colors.grey[700]),
           ),
           widget: Notifications(),
-          height: min(250.0, notificationlist.length * 75.0),
+          height: min(350.0, notificationlist.length * 75.0),
         ),
       ],
     );

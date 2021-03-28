@@ -2,8 +2,8 @@
     package="com.example.let_me_see">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="الزاجل"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Student Services"
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

@@ -10,10 +10,10 @@ class Lecture {
   String get hall => this._hall;
 
   Lecture.fromMap(map) {
-    this._time = int.parse(map['lecture_at_id'].toString());
-    this._day = int.parse(map['dayinweek'].toString());
-    this._programName = map['name'];
-    this._hall = map['hall']['name'];
+    this._time = int.parse(map['time'].toString());
+    this._day = int.parse(map['day'].toString());
+    this._programName = map['material'];
+    this._hall = map['hall'];
   }
 }
 
@@ -31,11 +31,11 @@ class Notificate {
   int get id => this._id;
 
   Notificate.fromMap(map) {
-    this._author = map['teacher']['name'];
+    this._author = map['author'];
     this._title = map['title'];
-    this._id = int.parse(map['Id'].toString());
+    this._id = int.parse(map['id'].toString());
     this._description = map['description'].toString();
-    this._authorId = int.parse(map['author'].toString());
+    this._authorId = int.parse(map['authorid'].toString());
   }
 }
 
@@ -54,9 +54,9 @@ class Doc {
 
   Doc.fromMap(map) {
     this._id = map['id'];
-    this._ownerid = int.parse(map['owner'].toString());
-    this._name = map['path'].split('\\').last;
-    this._owner = map['teacher']['name'];
+    this._ownerid = int.parse(map['ownerid'].toString());
+    this._name = map['name'].split('\\').last;
+    this._owner = map['owner'];
   }
 }
 
@@ -75,9 +75,22 @@ class Requst {
 
   Requst.fromMap(map) {
     this._id = int.parse(map['id'].toString());
-    this._typeId = int.parse(map['request_type'].toString());
-    this._statusId = int.parse(map['status'].toString());
-    this._type = map['request_type1']['name'];
-    this._status = map['status1']['status1'].toString();
+    this._typeId = int.parse(map['typeid'].toString());
+    this._statusId = int.parse(map['statusid'].toString());
+    this._type = map['type'];
+    this._status = map['status'].toString();
+  }
+}
+
+class Mark {
+  double _mark;
+  String _name;
+
+  double get mark => this._mark;
+  String get name => this._name;
+
+  Mark.fromMap(map) {
+    this._mark = map['mark'];
+    this._name = map['name'];
   }
 }

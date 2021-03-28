@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:let_me_see/screens/ApiConnection.dart';
 import 'package:let_me_see/screens/DocList.dart';
 import 'package:let_me_see/screens/Home.dart';
+import 'package:let_me_see/screens/Marks.dart';
 import 'package:let_me_see/screens/Notifications.dart';
 import 'package:let_me_see/screens/RequestList.dart';
 import 'package:line_icons/line_icons.dart';
@@ -35,7 +36,8 @@ class _TabberState extends State<Tabber> {
     List<Widget> _widgetOptions = <Widget>[
       HomeScreen(),
       if (!isateacher) RequestList(),
-      NotificationList(),
+      if (isateacher) NotificationList(),
+      if (!isateacher) Marks(),
       DocList(),
     ];
     return Scaffold(

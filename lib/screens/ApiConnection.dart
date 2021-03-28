@@ -61,6 +61,7 @@ class _ApiConnectionState extends State<ApiConnection> {
       await updatenotificationlist();
       if (isateacher) lecturelist = <Lecture>[];
       await updatedoclist();
+      await updateMarkList();
       await updaterequestlist();
     } catch (e) {
       unavilable = true;
@@ -82,7 +83,6 @@ updatedoclist() async {
   for (var i in jsonData) {
     Doc d = Doc.fromMap(i);
     doclist.add(d);
-    print(i['path'].split('\\').last);
   }
 }
 
@@ -112,6 +112,21 @@ updaterequestlist() async {
     for (var i in jsonData) {
       var x = Requst.fromMap(i);
       requestlist.add(x);
+    }
+  }
+}
+
+updateMarkList() async {
+  if (!isateacher) {
+    marklist = <Mark>[];
+    var body = json.encode({'Id': userId});
+    var url = url0 + 'api/values/marklist';
+    var response =
+        await http.post(Uri.parse(url), body: body, headers: headers);
+    var jsonData = json.decode(response.body);
+    for (var i in jsonData) {
+      var x = Mark.fromMap(i);
+      marklist.add(x);
     }
   }
 }

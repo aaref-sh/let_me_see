@@ -79,7 +79,12 @@ class _LoginTeacherPageState extends State<LoginTeacherPage> {
       ],
     );
     if (val == null) return LoadingPage('جاري التحقق من المستخدم...');
-    if (val != 0) return ApiConnection(userId: val, isateacher: isateacher);
+    if (val != 0)
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  ApiConnection(userId: val, isateacher: isateacher)));
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(

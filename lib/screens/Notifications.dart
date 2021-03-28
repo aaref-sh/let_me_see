@@ -67,6 +67,7 @@ class _NotificationsState extends State<Notifications> {
                 leading: Icon(LineIcons.bullhorn),
                 title: Text(notificationlist[i].title),
                 onTap: () {
+                  print('notificatin tapped');
                   showDialog(
                       context: context,
                       builder: (_) => AlertDialog(
