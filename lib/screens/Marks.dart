@@ -13,26 +13,34 @@ class _MarksState extends State<Marks> {
       itemCount: marklist.length,
       itemBuilder: (context, index) {
         int i = marklist.length - 1 - index;
-        return Container(
-            // child: Row(
-            //   children: [
-            //     Expanded(
-            //         child: Center(
-            //       child: Text(marklist[i].name),
-            //     )),
-            //     Expanded(
-            //       child: Container(
-            //         color: marklist[i].mark < 60
-            //             ? Colors.red[200]
-            //             : Colors.green[200],
-            //         child: Center(
-            //           child: Text(marklist[i].mark.toString()),
-            //         ),
-            //       ),
-            //     )
-            //   ],
-            // ),
-            );
+        bool ra = marklist[i].mark < 60;
+        return ListTile(
+          tileColor: i % 2 == 0 ? Colors.grey[200] : Colors.grey[100],
+          title: Center(
+              child: Text(
+            marklist[i].name,
+            style: TextStyle(fontSize: 20),
+          )),
+          trailing: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: ra ? Colors.red[300] : Colors.green[300],
+                border: Border.all(
+                  color: ra ? Colors.red[900] : Colors.green[800],
+                  width: 4,
+                )),
+            height: 40,
+            width: 100,
+            child: Center(
+              child: Container(
+                child: Text(
+                  marklist[i].mark.toString(),
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+        );
       },
     );
   }

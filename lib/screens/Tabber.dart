@@ -66,7 +66,7 @@ class _TabberState extends State<Tabber> {
                   GButton(icon: LineIcons.home, text: 'الرئيسية'),
                   if (!isateacher)
                     GButton(icon: LineIcons.fileInvoice, text: 'الطلبات'),
-                  GButton(icon: LineIcons.bullhorn, text: 'الإعلانات'),
+                  GButton(icon: LineIcons.checkCircle, text: 'النتائج'),
                   GButton(icon: LineIcons.pdfFile, text: 'المحاضرات'),
                 ],
                 selectedIndex: selectedIndex,
