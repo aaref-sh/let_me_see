@@ -66,7 +66,10 @@ class _TabberState extends State<Tabber> {
                   GButton(icon: LineIcons.home, text: 'الرئيسية'),
                   if (!isateacher)
                     GButton(icon: LineIcons.fileInvoice, text: 'الطلبات'),
-                  GButton(icon: LineIcons.checkCircle, text: 'النتائج'),
+                  if (!isateacher)
+                    GButton(icon: LineIcons.checkCircle, text: 'النتائج'),
+                  if (isateacher)
+                    GButton(icon: LineIcons.bullhorn, text: 'الاعلانات'),
                   GButton(icon: LineIcons.pdfFile, text: 'المحاضرات'),
                 ],
                 selectedIndex: selectedIndex,
@@ -136,8 +139,8 @@ class _TabberState extends State<Tabber> {
                             });
                             print(json.decode(response.body));
                           } catch (_) {}
-                          Navigator.pop(context);
                           await updaterequestlist();
+                          Navigator.pop(context);
                           setState(() {});
                         },
                         child: Text('طلب')),
